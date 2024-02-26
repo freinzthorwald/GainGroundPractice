@@ -28,23 +28,8 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float seconds = Time.deltaTime;
-        timeToShoot -= seconds;
         ChangeDirection();
-        if(timeToShoot < 0)
-        {
-            Shoot();
-            timeToShoot += fireRate;
-        }
-    }
-
-    private void Shoot()
-    {
-        
-        GameObject projectileObject = Instantiate(ProjectilePrefab, transform.position, transform.rotation);
-        Projectile projectile = projectileObject.GetComponent<Projectile>();
-        projectile.Init(projectileData, false);
-        Physics.IgnoreCollision(projectile.GetComponent<SphereCollider>(), gameObject.GetComponent<BoxCollider>());
+        DetermineShooting();
     }
 
     private GameObject GetClosestPlayer()
@@ -68,7 +53,32 @@ public class Enemy : MonoBehaviour
     private void ChangeDirection()
     {
         GameObject player = GetClosestPlayer();
-        float forwardDirection = transform.rotation.z;
-        transform.LookAt(player.transform);
+        if(player != null)
+        {
+            transform.LookAt(player.transform);
+        }
+    }
+
+    private void DetermineShooting()
+    {
+        float seconds = Time.deltaTime;
+        timeToShoot = timeToShoot < 0 ? timeToShoot : timeToShoot - seconds; /*Originally had this as just -= but thinking about it this check would prevent the game from crashing if the player left the game running for a bajillion years */
+        GameObject player = GetClosestPlayer();
+        float distance = Mathf.Abs(transform.position.x - player.transform.position.x +  transform.position.y - player.transform.position.y);
+        Debug.Log("Distance " + distance + " and TimeToShoot = " + timeToShoot);
+        if (timeToShoot < 0 && distance < fireRange)
+        {
+            Debug.Log("Shooting" + timeToShoot);
+            Shoot();
+            timeToShoot = fireRate; /* += Would give this a more consistent rate but the difference should be neglible overall. Also won't matter given the previous assignment. */
+        }
+    }
+
+    private void Shoot()
+    {
+        GameObject projectileObject = Instantiate(ProjectilePrefab, transform.position, transform.rotation);
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        projectile.Init(projectileData, false);
+        Physics.IgnoreCollision(projectile.GetComponent<SphereCollider>(), gameObject.GetComponent<BoxCollider>());
     }
 }

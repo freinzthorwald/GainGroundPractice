@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class Projectile : MonoBehaviour
     public void Init(ProjectileScriptableObject data, bool isHero)
     {
         this.ForwardVelocity = data.ForwardVelocity;
-        this.VerticalVelocity = data.VerticalVelocity;
+        this.VerticalVelocity = GetInitialVerticalVelocity(data.VerticalVelocity);
         this.VerticalDrop = data.VerticalDrop;
         this.LifeSpan = data.LifeSpan;
         this.IsHero = isHero;
@@ -41,6 +42,26 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        if(other.gameObject.GetComponent<Enemy>() != null)
+        {
+            if(IsHero)
+            {
+                Destroy(other.gameObject);
+            }
+        }
+        else if(other.gameObject.GetComponent<Player>() != null)
+        {
+            if(!IsHero)
+            {
+                Destroy(other.gameObject);
+            }
+        }
         Destroy(gameObject);
+    }
+
+    private float GetInitialVerticalVelocity(float verticalVelocity)
+    {
+        float modifier = ((90 - transform.rotation.eulerAngles.x * 2) / 90);
+        return modifier * verticalVelocity;
     }
 }

@@ -15,34 +15,43 @@ public class ControllerHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(player != null)
+        {
+            ReadInput();
+        }
+        
+    }
+
+    private void ReadInput()
+    {
         int xDir = 0;
         int yDir = 0;
 
-        if(Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
             yDir++;
         }
-        if(Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow))
         {
             yDir--;
         }
-        if(Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
             xDir--;
         }
-        if(Input.GetKey (KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))
         {
             xDir++;
         }
 
         Vector3 newDirection = new Vector3(xDir, 0, yDir);
 
-        if(xDir != 0 || yDir != 0)
+        if (xDir != 0 || yDir != 0)
         {
             player.Move(newDirection, Time.deltaTime);
         }
 
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             player.Shoot(true);
         }

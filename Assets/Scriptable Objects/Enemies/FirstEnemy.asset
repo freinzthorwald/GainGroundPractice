@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 1
   FireRate: 5
-  FireRange: 5
+  FireRange: 30
   ProjectileData: {fileID: 11400000, guid: ac73c8d4ce3b595479ef34d9255b9613, type: 2}
