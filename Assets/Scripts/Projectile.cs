@@ -59,6 +59,8 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
+    //TODO: This isn't going to work as intended. Enemies shouldn't have to rotate into the ground to face a player to shoot closer to them.
+    //This also still overshoots, just not as bad as before.
     private float GetInitialVerticalVelocity(float verticalVelocity)
     {
         float modifier = ((90 - transform.rotation.eulerAngles.x * 2) / 90);

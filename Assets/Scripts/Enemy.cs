@@ -28,8 +28,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ChangeDirection();
-        DetermineShooting();
+        /* If the players are dead, just don't do anything anymore */
+        GameObject player = GetClosestPlayer();
+        if (player != null)
+        {
+            ChangeDirection(player);
+            DetermineShooting(player);
+        }
     }
 
     private GameObject GetClosestPlayer()
@@ -50,25 +55,18 @@ public class Enemy : MonoBehaviour
         return closestObject;
     }
 
-    private void ChangeDirection()
+    private void ChangeDirection(GameObject player)
     {
-        GameObject player = GetClosestPlayer();
-        if(player != null)
-        {
-            transform.LookAt(player.transform);
-        }
+        transform.LookAt(player.transform);
     }
 
-    private void DetermineShooting()
+    private void DetermineShooting(GameObject player)
     {
         float seconds = Time.deltaTime;
         timeToShoot = timeToShoot < 0 ? timeToShoot : timeToShoot - seconds; /*Originally had this as just -= but thinking about it this check would prevent the game from crashing if the player left the game running for a bajillion years */
-        GameObject player = GetClosestPlayer();
         float distance = Mathf.Abs(transform.position.x - player.transform.position.x +  transform.position.y - player.transform.position.y);
-        Debug.Log("Distance " + distance + " and TimeToShoot = " + timeToShoot);
         if (timeToShoot < 0 && distance < fireRange)
         {
-            Debug.Log("Shooting" + timeToShoot);
             Shoot();
             timeToShoot = fireRate; /* += Would give this a more consistent rate but the difference should be neglible overall. Also won't matter given the previous assignment. */
         }
